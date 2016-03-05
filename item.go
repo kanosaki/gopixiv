@@ -5,7 +5,7 @@ type User struct {
 	Stats            string `json:"stats"`
 	Name             string `json:"name"`
 	IsFollower       bool `json:"is_follower"`
-	ProfileImageUrls map[string]string `json:"profile_image_urls`
+	ProfileImageUrls map[string]string `json:"profile_image_urls"`
 	Account          string `json:"account"`
 	Profile          string `json:"profile"`
 	IsFollowing      bool `json:"is_following"`
