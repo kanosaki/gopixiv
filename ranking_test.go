@@ -1,4 +1,4 @@
-package gopixiv
+package main
 
 import (
 	"testing"
@@ -16,8 +16,5 @@ func TestFetchRanking(t *testing.T) {
 	}
 	if len(ranking) == 0 {
 		t.Error("Empty result!")
-	}
-	for _, item := range ranking {
-		pp.Println(item)
 	}
 }

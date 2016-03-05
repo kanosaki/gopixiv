@@ -1,8 +1,4 @@
-package gopixiv
-
-type Item interface{
-
-}
+package main
 
 type User struct {
 	IsFriend         bool `json:"is_friend"`
@@ -30,7 +26,7 @@ type ItemFavorites struct {
 	Private int `json:"private"`
 }
 
-type Illust struct {
+type Item struct {
 	Caption            string `json:"caption"`
 	// "right_to_left" or "none"
 	BookStyle          string `json:"book_style"`

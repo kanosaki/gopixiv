@@ -1,4 +1,4 @@
-package gopixiv
+package main
 
 import (
 	"net/http"
@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"encoding/json"
 	"net/http/cookiejar"
+	log "github.com/Sirupsen/logrus"
 )
 
 type Config struct {
@@ -56,6 +57,7 @@ func New(config *Config) *Pixiv {
 }
 
 func (px *Pixiv) FetchToken(ctx context.Context) error {
+	log.Debugf("Login: %s", px.Config.Username)
 	config := px.Config
 	oauthConfig := CreateOAuthConfig(config.ClientID, config.ClientSecret)
 	jar, err := cookiejar.New(nil)

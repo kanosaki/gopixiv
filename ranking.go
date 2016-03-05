@@ -1,25 +1,66 @@
-package gopixiv
+package main
 
 import (
 	"time"
 	"net/http"
-	"encoding/json"
 	"strconv"
-	"github.com/k0kubun/pp"
+	"errors"
+)
+
+type RankingCategory string
+
+const (
+	RANKING_CATEGORY_ALL RankingCategory = "all"
+	RANKING_CATEGORY_ILLUST RankingCategory = "illust"
+	RANKING_CATEGORY_MANGA RankingCategory = "manga"
+	RANKING_CATEGORY_UGOIRA RankingCategory = "ugoira"
+	RANKING_CATEGORY_NOVEL RankingCategory = "novel"
+)
+
+type RankingMode string
+
+const (
+	RANKING_MODE_DAILY RankingMode = "daily"
+	RANKING_MODE_DAILY_R18 RankingMode = "daily_r18"
+	RANKING_MODE_WEEKLY RankingMode = "weekly"
+	RANKING_MODE_WEEKLY_R18 RankingMode = "weekly_r18"
+	RANKING_MODE_MONTHLY RankingMode = "monthly"
+	RANKING_MODE_MONTHLY_R18 RankingMode = "monthly_r18"
+
+// only allowed for 'all' categories
+	RANKING_MODE_ORIGINAL RankingMode = "original"
+	RANKING_MODE_ROOKIE RankingMode = "rookie"
+	RANKING_MODE_MALE RankingMode = "male"
+	RANKING_MODE_MALE_R18 RankingMode = "male_r18"
+	RANKING_MODE_FEMALE RankingMode = "female"
+	RANKING_MODE_FEMALE_R18 RankingMode = "female_r18"
+	RANKING_MODE_R18G RankingMode = "r18g"
+)
+
+var (
+	allOnlyRankings map[RankingMode]bool = map[RankingMode]bool{
+		RANKING_MODE_ORIGINAL: true,
+		RANKING_MODE_ROOKIE: true,
+		RANKING_MODE_MALE: true,
+		RANKING_MODE_MALE_R18: true,
+		RANKING_MODE_FEMALE: true,
+		RANKING_MODE_FEMALE_R18: true,
+		RANKING_MODE_R18G: true,
+	}
 )
 
 type RankingItem struct {
-	Work         Illust `json:"work"`
+	Work         Item `json:"work"`
 	PreviousRank int  `json:"previous_rank"`
 	Rank         int  `json:"rank"`
 }
 
 type RankingQuery struct {
-	Category string
-	Mode     string
+	Category RankingCategory
+	Mode     RankingMode
 	Date     *time.Time
 	PerPage  int
-	*APIEndpoint
+	APIEndpoint
 }
 
 type RankingResponse struct {
@@ -29,29 +70,35 @@ type RankingResponse struct {
 	Works   []RankingItem `json:"works"`
 }
 
-func (px *Pixiv) RankingQuery(category string, mode string, perPage int, date *time.Time) *RankingQuery {
-	query := &RankingQuery{
+func (px *Pixiv) RankingQuery(category RankingCategory, mode RankingMode, perPage int, date *time.Time) *RankingQuery {
+	q := &RankingQuery{
 		Category: category,
 		Mode: mode,
 		Date: date,
 		PerPage: perPage,
-		APIEndpoint: InitAPIEndpoint(),
 	}
-	return query
-}
-
-func (px *Pixiv) Ranking(category string, mode string, perPage int, date *time.Time, page int) ([]RankingItem, error) {
-	query := px.RankingQuery(category, mode, perPage, date)
 	client, err := px.AuthClient()
-	if err != nil {
-		return nil, err
+	if err == nil && client != nil {
+		q.DefaultClient(client)
 	}
-	return query.Get(client, page)
+	return q
 }
 
-func (rq *RankingQuery) Get(client *http.Client, page int) ([]RankingItem, error) {
+func (px *Pixiv) Ranking(category RankingCategory, mode RankingMode, perPage int, date *time.Time, page int) ([]RankingItem, error) {
+	query := px.RankingQuery(category, mode, perPage, date)
+	return query.Get(page)
+}
+
+func (rq *RankingQuery) Get(page int) ([]RankingItem, error) {
+	if (rq.client == nil) {
+		return nil, errors.New("Client is not activated!")
+	}
+	return rq.Fetch(rq.client, page)
+}
+
+func (rq *RankingQuery) Fetch(client *http.Client, page int) ([]RankingItem, error) {
 	params := map[string]string{
-		"mode": rq.Mode,
+		"mode": string(rq.Mode),
 		"include_stats": "true",
 		"include_sanity_level": "true",
 		"image_sizes": "small,px_128x128,px_480mw,large",
@@ -61,24 +108,8 @@ func (rq *RankingQuery) Get(client *http.Client, page int) ([]RankingItem, error
 	}
 	if rq.Date != nil {
 	}
-	req, err := rq.RequestGET("v1/ranking/" + rq.Category, params)
-	if err != nil {
-		return nil, err
-	}
-	res, err := client.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	if res.StatusCode != 200 {
-		return nil, pp.Errorf("%v - \n %v", res.Status, res.Request)
-	}
-	defer res.Body.Close()
-	apiResponse, err := ReadAPIResponse(res.Body)
-	if err != nil {
-		return nil, err
-	}
 	var rankingResponse []RankingResponse
-	err = json.Unmarshal(*apiResponse.Response, &rankingResponse)
+	err := rq.execGet(client, "v1/ranking/" + string(rq.Category), params, &rankingResponse)
 	if err != nil {
 		return nil, err
 	}
