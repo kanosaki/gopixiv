@@ -13,10 +13,10 @@ import (
 
 var DefaultRequestHeaders = map[string]string{
 	"Content-Type": "application/x-www-form-urlencoded",
-	"User-Agent": "PixivIOSApp/5.6.0",
+	"User-Agent": USER_AGENT,
 	//"Accept": "*/*",
 	"Accept-Encoding": "gzip, deflate",
-	"Referer": "http://spapi.pixiv.net/", // non-auth (image servers...)
+	"Referer": DEFAULT_REFERRER, // non-auth (image servers...)
 	// "Referer": "http://www.pixiv.net", // auth (api server ...)
 	//"Accept-Language": "ja-jp",
 }

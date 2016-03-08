@@ -11,7 +11,7 @@ import (
 type SearchQuery struct {
 	Query   string
 	Mode    SearchMode
-	Types   []SearchType
+	Types   []ItemType
 	Sort    SearchResultSort
 	Order   SearchResultOrders
 	Period  SearchPeriods
@@ -24,14 +24,6 @@ type SearchMode string
 const (
 	SEARCH_MODE_CAPTION SearchMode = "caption"
 	SEARCH_MODE_TAG SearchMode = "tag"
-)
-
-type SearchType string
-
-const (
-	SEARCH_TYPE_ILLUSTRATION = "illustration"
-	SEARCH_TYPE_MANGA = "manga"
-	SEARCH_TYPE_UGOIRA = "ugoira"
 )
 
 type SearchResultOrders string
@@ -62,7 +54,7 @@ func (px *Pixiv) SearchQuery(queryString string) *SearchQuery {
 	q := &SearchQuery{
 		Query: queryString,
 		Mode: SEARCH_MODE_TAG,
-		Types: []SearchType{SEARCH_TYPE_ILLUSTRATION, SEARCH_TYPE_MANGA, SEARCH_TYPE_UGOIRA},
+		Types: []ItemType{ITEM_TYPE_ILLUSTRATION, ITEM_TYPE_MANGA, ITEM_TYPE_UGOIRA},
 		Sort: SEARCH_SORT_DATE,
 		Order: SEARCH_ORDER_DESCENDING,
 		Period: SEARCH_PERIOD_ALL,
@@ -102,13 +94,10 @@ func (rq *SearchQuery) Fetch(client *http.Client, page int) ([]Item, error) {
 		"order": string(rq.Order),
 		"sort": string(rq.Sort),
 		"period": string(rq.Period),
-		"include_stats": "true",
-		"include_sanity_level": "true",
-		"image_sizes": "small,px_128x128,px_480mw,large",
-		// "profile_image_sizes": "px_170x170,px_50x50",
 		"page":  strconv.Itoa(page),
 		"per_page": strconv.Itoa(rq.PerPage),
 	}
+	setCommonApiParams(&params)
 	var searchResponse []Item
 	err := rq.execGet(client, "v1/search/works", params, &searchResponse)
 	if err != nil {

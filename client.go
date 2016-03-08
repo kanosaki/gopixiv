@@ -102,5 +102,6 @@ func (px *Pixiv) PlainClient() (*http.Client, error) {
 	}
 	return &http.Client{
 		Jar: px.AuthConnection.Jar,
+
 	}, nil
 }

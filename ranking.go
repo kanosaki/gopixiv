@@ -99,13 +99,10 @@ func (rq *RankingQuery) Get(page int) ([]RankingItem, error) {
 func (rq *RankingQuery) Fetch(client *http.Client, page int) ([]RankingItem, error) {
 	params := map[string]string{
 		"mode": string(rq.Mode),
-		"include_stats": "true",
-		"include_sanity_level": "true",
-		"image_sizes": "small,px_128x128,px_480mw,large",
-		// "profile_image_sizes": "px_170x170,px_50x50",
 		"page":  strconv.Itoa(page),
 		"per_page": strconv.Itoa(rq.PerPage),
 	}
+	setCommonApiParams(&params)
 	if rq.Date != nil {
 	}
 	var rankingResponse []RankingResponse
