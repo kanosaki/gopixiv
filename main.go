@@ -5,7 +5,21 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"flag"
+	"github.com/Sirupsen/logrus"
 )
+
+var (
+	DUMP_COMMUNICATION_DIR = flag.String("dump", "", "dump all requests as file")
+	DEBUG = flag.Bool("debug", false, "debug mode (verbose output)")
+)
+
+func init() {
+	flag.Parse()
+	if *DEBUG {
+		logrus.SetLevel(logrus.DebugLevel)
+	}
+}
 
 func main() {
 	pixiv, err := NewFromConfigFile("private/config.json")

@@ -1,6 +1,10 @@
 package main
 
-import "net/http"
+import (
+	"net/http"
+	"io"
+	"github.com/k0kubun/pp"
+)
 
 const (
 	DEFAULT_REFERRER = "http://spapi.pixiv-app.net/"
@@ -48,3 +52,43 @@ func setCommonApiParams(params *map[string]string) {
 		(*params)[k] = v
 	}
 }
+
+// from io.go
+func TeeReadCloser(readIn io.Reader, readClose io.Closer, writeIn io.Writer, writeClose io.Closer) io.ReadCloser {
+	return &teeReadCloser{
+		readIn, readClose, writeIn, writeClose,
+	}
+}
+
+type teeReadCloser struct {
+	ri io.Reader
+	rc io.Closer
+	wi io.Writer
+	wc io.Closer
+}
+
+func (t *teeReadCloser) Read(p []byte) (n int, err error) {
+	n, err = t.ri.Read(p)
+	if n > 0 {
+		if n, err := t.wi.Write(p[:n]); err != nil {
+			return n, err
+		}
+	}
+	return
+}
+
+func (t *teeReadCloser) Close() error {
+	var rErr, wErr error
+	if t.rc != nil {
+		rErr = t.rc.Close()
+	}
+	if t.wc != nil {
+		wErr = t.wc.Close()
+	}
+	if rErr != nil || wErr != nil {
+		return pp.Errorf("TeeReadCloser.Close error:\n input reader error: %v \n output writer error %v", rErr, wErr)
+	} else {
+		return nil
+	}
+}
+
