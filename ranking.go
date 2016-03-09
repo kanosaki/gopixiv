@@ -110,5 +110,10 @@ func (rq *RankingQuery) Fetch(client *http.Client, page int) ([]RankingItem, err
 	if err != nil {
 		return nil, err
 	}
+	for _, rRes := range rankingResponse {
+		for _, item := range rRes.Works {
+			item.Work.SourceAPI = API_RANKING
+		}
+	}
 	return rankingResponse[0].Works, nil
 }

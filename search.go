@@ -103,5 +103,8 @@ func (rq *SearchQuery) Fetch(client *http.Client, page int) ([]Item, error) {
 	if err != nil {
 		return nil, err
 	}
+	for _, item := range searchResponse {
+		item.SourceAPI = API_SEARCH
+	}
 	return searchResponse, nil
 }

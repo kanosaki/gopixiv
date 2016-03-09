@@ -53,6 +53,7 @@ type ItemFavorites struct {
 }
 
 type Item struct {
+	SourceAPI          ItemSourceAPI `json:"-"`
 	Caption            string `json:"caption"`
 	// "right_to_left" or "none"
 	BookStyle          string `json:"book_style"`
@@ -78,6 +79,10 @@ type Item struct {
 	ID                 int `json:"id"`
 	Height             int `json:"height"`
 	AgeLimit           string `json:"age_limit"`
+}
+
+func (self *Item) IsFilled() bool {
+	return self.SourceAPI == API_DETAIL
 }
 
 func (self *Item) emulateImageUrlOf(size ImageSize, page int) (string, error) {
@@ -142,6 +147,9 @@ func (self *WorkDetail) Fetch(client *http.Client, origin *Item) (*Item, error) 
 	err := self.execGet(client, fmt.Sprintf("v1/works/%d.json", origin.ID), params, &resp)
 	if err != nil {
 		return nil, err
+	}
+	for _, item := range resp {
+		item.SourceAPI = API_DETAIL
 	}
 	return &resp[0], nil
 }
