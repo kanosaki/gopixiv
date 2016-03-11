@@ -2,9 +2,6 @@ package main
 
 import (
 	"github.com/k0kubun/pp"
-	"fmt"
-	"io"
-	"os"
 	"flag"
 	"github.com/Sirupsen/logrus"
 )
@@ -31,26 +28,32 @@ func main() {
 		panic(err)
 	}
 	for _, item := range ranking {
-		if item.Work.ItemType == ITEM_TYPE_MANGA {
+		if item.Work.PageCount > 1 {
 			pp.Println(item)
+			fullFirst, err := item.Work.Fill(pixiv)
+			if err != nil {
+				panic(err)
+			}
+			pp.Println(fullFirst)
+			break
 		}
 	}
-	first := ranking[0].Work
+	//first := ranking[0].Work
 	//search, err := pixiv.Search("チノ", 1)
 	//if err != nil {
 	//	panic(err)
 	//}
 	//first := search[0]
-	pp.Println(first)
-	img, err := first.OpenImage(pixiv, SIZE_LARGE, 1)
-	if err != nil {
-		panic(err)
-	}
-	defer img.Close()
-	dst, err := os.Create(fmt.Sprintf("/Users/saki/table/sample.%s", first.ContentType))
-	if err != nil {
-		panic(err)
-	}
-	defer dst.Close()
-	io.Copy(dst, img)
+	//pp.Println(first)
+	//img, err := first.OpenImage(pixiv, SIZE_LARGE, 1)
+	//if err != nil {
+	//	panic(err)
+	//}
+	//defer img.Close()
+	//dst, err := os.Create(fmt.Sprintf("/Users/saki/table/sample.%s", first.Extension()))
+	//if err != nil {
+	//	panic(err)
+	//}
+	//defer dst.Close()
+	//io.Copy(dst, img)
 }
