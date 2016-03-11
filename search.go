@@ -99,7 +99,7 @@ func (rq *SearchQuery) Fetch(client *http.Client, page int) ([]Item, error) {
 	}
 	setCommonApiParams(&params)
 	var searchResponse []Item
-	err := rq.execGet(client, "v1/search/works", params, &searchResponse)
+	err := rq.call(client, "v1/search/works", params, &searchResponse)
 	if err != nil {
 		return nil, err
 	}

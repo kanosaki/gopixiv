@@ -106,7 +106,7 @@ func (rq *RankingQuery) Fetch(client *http.Client, page int) ([]RankingItem, err
 	if rq.Date != nil {
 	}
 	var rankingResponse []RankingResponse
-	err := rq.execGet(client, "v1/ranking/" + string(rq.Category), params, &rankingResponse)
+	err := rq.call(client, "v1/ranking/" + string(rq.Category), params, &rankingResponse)
 	if err != nil {
 		return nil, err
 	}

@@ -1,0 +1,129 @@
+{
+  "status": "success",
+  "response": [
+    {
+      "id": 12345678,
+      "title": "MangaSampleFile1",
+      "caption": "Captions Here",
+      "tags": [
+        "オリジナル",
+        "tag2",
+        "tag3"
+      ],
+      "tools": ["a", "b"],
+      "image_urls": {
+        "small": "http://i4.pixiv.net/c/150x150/img-master/img/2016/03/07/12/09/50/12345678_p0_master1200.jpg",
+        "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p0_square1200.jpg",
+        "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p0_master1200.jpg",
+        "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p0.jpg"
+      },
+      "width": 1000,
+      "height": 500,
+      "stats": {
+        "scored_count": 1234,
+        "score": 4321,
+        "views_count": 10000,
+        "favorited_count": {
+          "public": 123,
+          "private": 543
+        },
+        "commented_count": 32
+      },
+      "publicity": 0,
+      "age_limit": "all-age",
+      "created_time": "2016-03-07 12:09:50",
+      "reuploaded_time": "2016-03-08 11:09:30",
+      "user": {
+        "id": 987654,
+        "account": "hogehoge",
+        "name": "ほげほげ",
+        "is_following": false,
+        "is_follower": false,
+        "is_friend": false,
+        "is_premium": null,
+        "profile_image_urls": {
+          "px_50x50": "http://i4.pixiv.net/img56/profile/hogehoge/987654.jpg"
+        },
+        "stats": null,
+        "profile": null
+      },
+      "is_manga": true,
+      "is_liked": false,
+      "favorite_id": 0,
+      "page_count": 8,
+      "book_style": "none",
+      "type": "illustration",
+      "metadata": {
+        "pages": [
+          {
+            "image_urls": {
+              "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p0.jpg",
+              "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p0_square1200.jpg",
+              "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p0_master1200.jpg",
+              "medium": "http://i4.pixiv.net/c/1200x1200/img-master/img/2016/03/07/12/09/50/12345678_p0_master1200.jpg"
+            }
+          },
+          {
+            "image_urls": {
+              "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p1.jpg",
+              "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p1_square1200.jpg",
+              "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p1_master1200.jpg",
+              "medium": "http://i4.pixiv.net/c/1200x1200/img-master/img/2016/03/07/12/09/50/12345678_p1_master1200.jpg"
+            }
+          },
+          {
+            "image_urls": {
+              "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p2.jpg",
+              "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p2_square1200.jpg",
+              "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p2_master1200.jpg",
+              "medium": "http://i4.pixiv.net/c/1200x1200/img-master/img/2016/03/07/12/09/50/12345678_p2_master1200.jpg"
+            }
+          },
+          {
+            "image_urls": {
+              "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p3.jpg",
+              "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p3_square1200.jpg",
+              "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p3_master1200.jpg",
+              "medium": "http://i4.pixiv.net/c/1200x1200/img-master/img/2016/03/07/12/09/50/12345678_p3_master1200.jpg"
+            }
+          },
+          {
+            "image_urls": {
+              "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p4.jpg",
+              "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p4_square1200.jpg",
+              "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p4_master1200.jpg",
+              "medium": "http://i4.pixiv.net/c/1200x1200/img-master/img/2016/03/07/12/09/50/12345678_p4_master1200.jpg"
+            }
+          },
+          {
+            "image_urls": {
+              "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p5.jpg",
+              "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p5_square1200.jpg",
+              "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p5_master1200.jpg",
+              "medium": "http://i4.pixiv.net/c/1200x1200/img-master/img/2016/03/07/12/09/50/12345678_p5_master1200.jpg"
+            }
+          },
+          {
+            "image_urls": {
+              "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p6.jpg",
+              "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p6_square1200.jpg",
+              "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p6_master1200.jpg",
+              "medium": "http://i4.pixiv.net/c/1200x1200/img-master/img/2016/03/07/12/09/50/12345678_p6_master1200.jpg"
+            }
+          },
+          {
+            "image_urls": {
+              "large": "http://i4.pixiv.net/img-original/img/2016/03/07/12/09/50/12345678_p7.jpg",
+              "px_128x128": "http://i4.pixiv.net/c/128x128/img-master/img/2016/03/07/12/09/50/12345678_p7_square1200.jpg",
+              "px_480mw": "http://i4.pixiv.net/c/480x960/img-master/img/2016/03/07/12/09/50/12345678_p7_master1200.jpg",
+              "medium": "http://i4.pixiv.net/c/1200x1200/img-master/img/2016/03/07/12/09/50/12345678_p7_master1200.jpg"
+            }
+          }
+        ]
+      },
+      "content_type": null,
+      "sanity_level": "white"
+    }
+  ],
+  "count": 1
+}

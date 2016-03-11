@@ -39,29 +39,9 @@ type APIEndpoint struct {
 
 type APIResponse struct {
 	Status   string `json:"status"`
-	Response *json.RawMessage `json:"response"`
+	Response json.RawMessage `json:"response"`
 }
 
-func ReadAPIResponse(input io.Reader) (*APIResponse, error) {
-	result := new(APIResponse)
-	dec, err := DecodeResponse(input)
-	if err != nil {
-		return nil, err
-	}
-	err = dec.Decode(result)
-	if err != nil {
-		return nil, err
-	}
-	return result, nil
-}
-
-func DecodeResponse(input io.Reader) (*json.Decoder, error) {
-	uncomp, err := gzip.NewReader(input)
-	if err != nil {
-		return nil, err
-	}
-	return json.NewDecoder(uncomp), nil
-}
 
 func (ep *APIEndpoint) Url(path string, params map[string]string) (string, error) {
 	u, err := url.Parse(ep.BaseUrl)
@@ -164,7 +144,34 @@ func (ep *APIEndpoint) openResponse(res *http.Response) (io.ReadCloser, error) {
 	return ret, nil
 }
 
-func (ep *APIEndpoint) execGet(client *http.Client, path string, params map[string]string, ret interface{}) error {
+func ReadAPIResponse(input io.Reader) (*APIResponse, error) {
+	result := new(APIResponse)
+	dec := json.NewDecoder(input)
+	err := dec.Decode(result)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (ep *APIEndpoint) readAndParse(resData io.Reader, ret interface{}) error {
+	apiResponse, err := ReadAPIResponse(resData)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(apiResponse.Response, ret)
+	if err != nil {
+		return pp.Errorf("JSON Parse failed: %v", err)
+	}
+	if apiResponse.Status != "success" {
+		return pp.Errorf("Request failed: %v", apiResponse)
+	}
+	return nil
+}
+
+// call this api with given client, path and params. And stores its response to ret
+// through json.Unmarshal
+func (ep *APIEndpoint) call(client *http.Client, path string, params map[string]string, ret interface{}) error {
 	req, err := ep.RequestGET(path, params)
 	if err != nil {
 		return err
@@ -181,16 +188,10 @@ func (ep *APIEndpoint) execGet(client *http.Client, path string, params map[stri
 	if err != nil {
 		return err
 	}
-	apiResponse, err := ReadAPIResponse(body)
+	decBody, err := gzip.NewReader(body)
 	if err != nil {
 		return err
 	}
-	err = json.Unmarshal(*apiResponse.Response, &ret)
-	if err != nil {
-		return err
-	}
-	if apiResponse.Status != "success" {
-		return pp.Errorf("Request filed: %v", apiResponse)
-	}
+	ep.readAndParse(decBody, ret)
 	return nil
 }

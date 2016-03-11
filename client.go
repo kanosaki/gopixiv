@@ -45,10 +45,16 @@ func NewFromConfigFile(path string) (*Pixiv, error) {
 	if err != nil {
 		return nil, err
 	}
-	return New(config), nil
+	return NewFromConfig(config), nil
 }
 
-func New(config *Config) *Pixiv {
+func New(clientID, clientSecret, username, password string) *Pixiv {
+	return NewFromConfig(&Config{
+		clientID, clientSecret, username, password,
+	})
+}
+
+func NewFromConfig(config *Config) *Pixiv {
 	return &Pixiv{
 		AuthConnection: nil,
 		Token: nil,

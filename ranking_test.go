@@ -2,10 +2,13 @@ package main
 
 import (
 	"testing"
-	"github.com/k0kubun/pp"
+	"os"
 )
 
 func TestFetchRanking(t *testing.T) {
+	if _, found := os.LookupEnv("TEST_ALL"); ! found {
+		t.SkipNow()
+	}
 	pixiv, err := NewFromConfigFile("private/config.json")
 	if err != nil {
 		t.Error(err)

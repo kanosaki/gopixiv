@@ -7,14 +7,15 @@ import (
 	"fmt"
 	"net/url"
 	"path"
+	"time"
 )
 
 type ItemType string
 
 const (
-	ITEM_TYPE_ILLUSTRATION = "illustration"
-	ITEM_TYPE_MANGA = "manga"
-	ITEM_TYPE_UGOIRA = "ugoira"
+	ITEM_TYPE_ILLUSTRATION ItemType = "illustration"
+	ITEM_TYPE_MANGA ItemType = "manga"
+	ITEM_TYPE_UGOIRA ItemType = "ugoira"
 )
 
 // where this item data came from?
@@ -24,6 +25,9 @@ const (
 	API_RANKING ItemSourceAPI = iota
 	API_SEARCH
 	API_DETAIL
+)
+const (
+	itemTimeStampFormat = "2006-01-02 03:04:05"
 )
 
 type User struct {
@@ -81,8 +85,49 @@ type Item struct {
 	AgeLimit           string `json:"age_limit"`
 }
 
+func (self *Item) Extension() string {
+	for _, imgUrl := range self.ImageUrls {
+		u, err := url.Parse(imgUrl)
+		if err != nil {
+			continue
+		} else {
+			return path.Ext(u.Path)
+		}
+	}
+	return ""
+}
+
 func (self *Item) IsFilled() bool {
 	return self.SourceAPI == API_DETAIL
+}
+
+func (self *Item) CreatedTime() time.Time {
+	if self.CreatedTimeExpr == "" {
+		return time.Time{}
+	}
+
+	ret, err := time.ParseInLocation(itemTimeStampFormat, self.CreatedTimeExpr, time.Local)
+	if err != nil {
+		panic(err)
+	}
+	return ret
+}
+
+func (self *Item) ReUploadedTime() time.Time {
+	if self.ReUploadedTimeExpr == "" {
+		return time.Time{}
+	}
+
+	ret, err := time.ParseInLocation(itemTimeStampFormat, self.ReUploadedTimeExpr, time.Local)
+	if err != nil {
+		panic(err)
+	}
+	return ret
+}
+
+// Fill this item details through given pixiv client
+func (self *Item) Fill(px *Pixiv) (*Item, error) {
+	return fetchItemDetail(px, self)
 }
 
 func (self *Item) emulateImageUrlOf(size ImageSize, page int) (string, error) {
@@ -135,6 +180,20 @@ func (self *Item) OpenImage(px *Pixiv, size ImageSize, pace int) (io.ReadCloser,
 	return resp.Body, nil
 }
 
+func fetchItemDetail(px *Pixiv, origin *Item) (*Item, error) {
+	if origin.IsFilled() {
+		return origin, nil
+	} else {
+		api := &WorkDetail{}
+		client, err := px.AuthClient()
+		if err != nil {
+			return nil, err
+		} else {
+			return api.Fetch(client, origin)
+		}
+	}
+}
+
 type WorkDetail struct {
 	APIEndpoint
 }
@@ -144,7 +203,7 @@ func (self *WorkDetail) Fetch(client *http.Client, origin *Item) (*Item, error) 
 	}
 	setCommonApiParams(&params)
 	var resp []Item
-	err := self.execGet(client, fmt.Sprintf("v1/works/%d.json", origin.ID), params, &resp)
+	err := self.call(client, fmt.Sprintf("v1/works/%d.json", origin.ID), params, &resp)
 	if err != nil {
 		return nil, err
 	}
