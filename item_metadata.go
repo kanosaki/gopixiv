@@ -1,4 +1,4 @@
-package main
+package pixiv
 
 import (
 	"encoding/json"
@@ -6,30 +6,30 @@ import (
 )
 
 const (
-// multi page urls
-// array of ImageUrlsPack
-// this field might be appear when pages is greater than 1
+	// multi page urls
+	// array of ImageUrlsPack
+	// this field might be appear when pages is greater than 1
 	ITEM_METADATA_PAGES = "pages"
-// ugoira zip urls
-// this field appears when "type" is "ugoira"
-// like:
-//"zip_urls": {
-//    "ugoira600x600": "http://i4.pixiv.net/img-zip-ugoira/img/2016/03/04/00/01/28/00000000_ugoira600x600.zip"
-//  },
+	// ugoira zip urls
+	// this field appears when "type" is "ugoira"
+	// like:
+	//"zip_urls": {
+	//    "ugoira600x600": "http://i4.pixiv.net/img-zip-ugoira/img/2016/03/04/00/01/28/00000000_ugoira600x600.zip"
+	//  },
 	ITEM_METADATA_ZIP_URLS = "zip_urls"
-// ugoira frames
-// like:
-//  "frames": [
-//    {
-//    "delay_msec": 80
-//    },
-//    {
-//    "delay_msec": 80
-//    },
-//    {
-//    "delay_msec": 80
-//    },
-//    ..
+	// ugoira frames
+	// like:
+	//  "frames": [
+	//    {
+	//    "delay_msec": 80
+	//    },
+	//    {
+	//    "delay_msec": 80
+	//    },
+	//    {
+	//    "delay_msec": 80
+	//    },
+	//    ..
 	ITEM_METADATA_FRAMES = "frames"
 )
 
@@ -56,16 +56,16 @@ func (self ItemMetadata) UnmarshalJSON(b []byte) error {
 type ImageSize string
 
 const (
-// for user profile image, not available for Item images
-	SIZE_50x50 ImageSize = "px_50x50"
+	// for user profile image, not available for Item images
+	SIZE_50x50   ImageSize = "px_50x50"
 	SIZE_170x170 ImageSize = "px_170x170"
 	SIZE_128x128 ImageSize = "px_128x128"
-// might be 150x150
+	// might be 150x150
 	SIZE_SMALL ImageSize = "small"
-// might be 1200x1200
-	SIZE_MEDIUM ImageSize = "medium"
+	// might be 1200x1200
+	SIZE_MEDIUM  ImageSize = "medium"
 	SIZE_480x960 ImageSize = "px_480mw"
-// might be raw image?
+	// might be raw image?
 	SIZE_LARGE ImageSize = "large"
 )
 

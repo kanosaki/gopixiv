@@ -1,9 +1,9 @@
-package main
+package pixiv
 
 import (
-	"testing"
-	"os"
 	"github.com/stretchr/testify/assert"
+	"os"
+	"testing"
 	"time"
 )
 

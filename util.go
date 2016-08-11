@@ -1,35 +1,35 @@
-package main
+package pixiv
 
 import (
-	"net/http"
-	"io"
 	"github.com/k0kubun/pp"
+	"io"
+	"net/http"
 )
 
 const (
 	DEFAULT_REFERRER = "http://spapi.pixiv-app.net/"
-	USER_AGENT = "PixivIOSApp/5.8.7"
+	USER_AGENT       = "PixivIOSApp/5.8.7"
 )
 
 var (
 	DEFAULT_API_REQUEST_HEADERS = map[string]string{
-		"Content-Type": "application/x-www-form-urlencoded",
-		"Referer": DEFAULT_REFERRER,
-		"User-Agent": USER_AGENT,
+		"Content-Type":    "application/x-www-form-urlencoded",
+		"Referer":         DEFAULT_REFERRER,
+		"User-Agent":      USER_AGENT,
 		"Accept-Encoding": "gzip, deflate",
 	}
 
 	DEFAULT_REQUEST_HEADERS = map[string]string{
-		"Content-Type": "application/x-www-form-urlencoded",
-		"Referer": DEFAULT_REFERRER,
-		"User-Agent": USER_AGENT,
+		"Content-Type":    "application/x-www-form-urlencoded",
+		"Referer":         DEFAULT_REFERRER,
+		"User-Agent":      USER_AGENT,
 		"Accept-Encoding": "gzip, deflate",
 	}
 	COMMON_API_PARAMS = map[string]string{
-		"include_stats": "true",
+		"include_stats":        "true",
 		"include_sanity_level": "true",
-		"image_sizes": "small,px_128x128,px_480mw,large",
-		"profile_image_sizes": "px_170x170,px_50x50",
+		"image_sizes":          "small,px_128x128,px_480mw,large",
+		"profile_image_sizes":  "px_170x170,px_50x50",
 	}
 )
 
@@ -91,4 +91,3 @@ func (t *teeReadCloser) Close() error {
 		return nil
 	}
 }
-

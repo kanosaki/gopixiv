@@ -1,29 +1,29 @@
-package main
+package pixiv
 
 import (
-	"net/http"
+	"encoding/json"
+	log "github.com/Sirupsen/logrus"
 	oauth2 "github.com/kanosaki/pixiv_oauth2" // modified for pixiv
 	"golang.org/x/net/context"
 	"io/ioutil"
-	"encoding/json"
+	"net/http"
 	"net/http/cookiejar"
-	log "github.com/Sirupsen/logrus"
 )
 
 type Config struct {
-	ClientID     string  `json:"client_id"`
-	ClientSecret string  `json:"client_secret"`
-	Username     string  `json:"username"`
-	Password     string  `json:"password"`
+	ClientID     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+	Username     string `json:"username"`
+	Password     string `json:"password"`
 }
 
 func CreateOAuthConfig(clientId string, clientSecret string) *oauth2.Config {
 	return &oauth2.Config{
-		ClientID: clientId,
+		ClientID:     clientId,
 		ClientSecret: clientSecret,
-		Scopes: []string{},
+		Scopes:       []string{},
 		Endpoint: oauth2.Endpoint{
-			AuthURL: "", // never used
+			AuthURL:  "", // never used
 			TokenURL: "https://oauth.secure.pixiv.net/auth/token",
 		},
 	}
@@ -57,8 +57,8 @@ func New(clientID, clientSecret, username, password string) *Pixiv {
 func NewFromConfig(config *Config) *Pixiv {
 	return &Pixiv{
 		AuthConnection: nil,
-		Token: nil,
-		Config: config,
+		Token:          nil,
+		Config:         config,
 	}
 }
 
@@ -90,7 +90,7 @@ func (px *Pixiv) IsAuthorized() bool {
 }
 
 func (px *Pixiv) AuthClient() (*http.Client, error) {
-	if ! px.IsAuthorized() {
+	if !px.IsAuthorized() {
 		err := px.FetchToken(context.Background())
 		if err != nil {
 			return nil, err
@@ -100,7 +100,7 @@ func (px *Pixiv) AuthClient() (*http.Client, error) {
 }
 
 func (px *Pixiv) PlainClient() (*http.Client, error) {
-	if ! px.IsAuthorized() {
+	if !px.IsAuthorized() {
 		err := px.FetchToken(context.Background())
 		if err != nil {
 			return nil, err
@@ -108,6 +108,5 @@ func (px *Pixiv) PlainClient() (*http.Client, error) {
 	}
 	return &http.Client{
 		Jar: px.AuthConnection.Jar,
-
 	}, nil
 }

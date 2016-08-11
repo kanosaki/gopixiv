@@ -1,12 +1,12 @@
-package main
+package pixiv
 
 import (
-	"testing"
 	"os"
+	"testing"
 )
 
 func TestFetchRanking(t *testing.T) {
-	if _, found := os.LookupEnv("TEST_ALL"); ! found {
+	if _, found := os.LookupEnv("TEST_ALL"); !found {
 		t.SkipNow()
 	}
 	pixiv, err := NewFromConfigFile("private/config.json")

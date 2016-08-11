@@ -1,24 +1,21 @@
-package main
+package pixiv
 
 import (
-	"github.com/k0kubun/pp"
 	"flag"
 	"github.com/Sirupsen/logrus"
+	"github.com/k0kubun/pp"
 )
 
 var (
 	DUMP_COMMUNICATION_DIR = flag.String("dump", "", "dump all requests as file")
-	DEBUG = flag.Bool("debug", false, "debug mode (verbose output)")
+	DEBUG                  = flag.Bool("debug", false, "debug mode (verbose output)")
 )
 
-func init() {
+func main() {
 	flag.Parse()
 	if *DEBUG {
 		logrus.SetLevel(logrus.DebugLevel)
 	}
-}
-
-func main() {
 	pixiv, err := NewFromConfigFile("private/config.json")
 	if err != nil {
 		panic(err)

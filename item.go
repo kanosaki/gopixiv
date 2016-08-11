@@ -1,10 +1,10 @@
-package main
+package pixiv
 
 import (
-	"io"
-	"github.com/k0kubun/pp"
-	"net/http"
 	"fmt"
+	"github.com/k0kubun/pp"
+	"io"
+	"net/http"
 	"net/url"
 	"path"
 	"time"
@@ -14,8 +14,8 @@ type ItemType string
 
 const (
 	ITEM_TYPE_ILLUSTRATION ItemType = "illustration"
-	ITEM_TYPE_MANGA ItemType = "manga"
-	ITEM_TYPE_UGOIRA ItemType = "ugoira"
+	ITEM_TYPE_MANGA        ItemType = "manga"
+	ITEM_TYPE_UGOIRA       ItemType = "ugoira"
 )
 
 // where this item data came from?
@@ -31,24 +31,24 @@ const (
 )
 
 type User struct {
-	IsFriend         bool `json:"is_friend"`
-	Stats            string `json:"stats"`
-	Name             string `json:"name"`
-	IsFollower       bool `json:"is_follower"`
+	IsFriend         bool          `json:"is_friend"`
+	Stats            string        `json:"stats"`
+	Name             string        `json:"name"`
+	IsFollower       bool          `json:"is_follower"`
 	ProfileImageUrls ImageUrlsPack `json:"profile_image_urls"`
-	Account          string `json:"account"`
-	Profile          string `json:"profile"`
-	IsFollowing      bool `json:"is_following"`
-	IsPremium        bool `json:"is_premium"`
-	ID               int `json:"id"`
+	Account          string        `json:"account"`
+	Profile          string        `json:"profile"`
+	IsFollowing      bool          `json:"is_following"`
+	IsPremium        bool          `json:"is_premium"`
+	ID               int           `json:"id"`
 }
 
 type ItemStats struct {
-	CommentedCount int `json:"commented_count"`
+	CommentedCount int           `json:"commented_count"`
 	FavoritedCount ItemFavorites `json:"favorited_count"`
-	Score          int `json:"score"`
-	ScoredCount    int `json:"scored_count"`
-	ViewsCount     int `json:"views_count"`
+	Score          int           `json:"score"`
+	ScoredCount    int           `json:"scored_count"`
+	ViewsCount     int           `json:"views_count"`
 }
 
 type ItemFavorites struct {
@@ -57,32 +57,32 @@ type ItemFavorites struct {
 }
 
 type Item struct {
-	SourceAPI          ItemSourceAPI `json:"-"`
-	Caption            string `json:"caption"`
+	SourceAPI ItemSourceAPI `json:"-"`
+	Caption   string        `json:"caption"`
 	// "right_to_left" or "none"
-	BookStyle          string `json:"book_style"`
-	IsManga            bool `json:"is_manga"`
-	ImageUrls          ImageUrlsPack `json:"image_urls"`
-	Width              int `json:"width"`
+	BookStyle string        `json:"book_style"`
+	IsManga   bool          `json:"is_manga"`
+	ImageUrls ImageUrlsPack `json:"image_urls"`
+	Width     int           `json:"width"`
 	// ugoira
-	ItemType           ItemType `json:"type"`
-	CreatedTimeExpr    string `json:"created_time"`
-	FavoriteID         int `json:"favorite_id"`
-	ContentType        string `json:"content_type"`
-	PageCount          int `json:"page_count"`
-	Tags               []string `json:"tags"`
-	Tools              []string `json:"tools"`
-	User               User `json:"user"`
-	SanityLevel        string `json:"sanity_level"`
-	ReUploadedTimeExpr string `json:"reuploaded_time"`
-	Stats              ItemStats `json:"stats"`
-	IsLiked            bool `json:"is_liked"`
+	ItemType           ItemType     `json:"type"`
+	CreatedTimeExpr    string       `json:"created_time"`
+	FavoriteID         int          `json:"favorite_id"`
+	ContentType        string       `json:"content_type"`
+	PageCount          int          `json:"page_count"`
+	Tags               []string     `json:"tags"`
+	Tools              []string     `json:"tools"`
+	User               User         `json:"user"`
+	SanityLevel        string       `json:"sanity_level"`
+	ReUploadedTimeExpr string       `json:"reuploaded_time"`
+	Stats              ItemStats    `json:"stats"`
+	IsLiked            bool         `json:"is_liked"`
 	Metadata           ItemMetadata `json:"metadata"`
-	Publicity          int `json:"publicity"`
-	Title              string `json:"title"`
-	ID                 int `json:"id"`
-	Height             int `json:"height"`
-	AgeLimit           string `json:"age_limit"`
+	Publicity          int          `json:"publicity"`
+	Title              string       `json:"title"`
+	ID                 int          `json:"id"`
+	Height             int          `json:"height"`
+	AgeLimit           string       `json:"age_limit"`
 }
 
 func (self *Item) Extension() string {
@@ -132,7 +132,7 @@ func (self *Item) Fill(px *Pixiv) (*Item, error) {
 
 func (self *Item) emulateImageUrlOf(size ImageSize, page int) (string, error) {
 	baseUrl, ok := self.ImageUrls[size]
-	if ! ok {
+	if !ok {
 		return "", pp.Errorf("Image size %v is not available", size)
 	}
 	u, err := url.Parse(baseUrl)
@@ -145,8 +145,10 @@ func (self *Item) emulateImageUrlOf(size ImageSize, page int) (string, error) {
 	switch size {
 	case SIZE_128x128:
 		name = fmt.Sprintf("%d_p%d_square1200.%s", self.ID, page, extension)
-	case SIZE_480x960: fallthrough
-	case SIZE_SMALL: fallthrough
+	case SIZE_480x960:
+		fallthrough
+	case SIZE_SMALL:
+		fallthrough
 	case SIZE_MEDIUM:
 		name = fmt.Sprintf("%d_p%d_master1200.%s", self.ID, page, extension)
 	case SIZE_LARGE:
@@ -160,7 +162,7 @@ func (self *Item) emulateImageUrlOf(size ImageSize, page int) (string, error) {
 
 func (self *Item) OpenImage(px *Pixiv, size ImageSize, pace int) (io.ReadCloser, error) {
 	url, ok := self.ImageUrls[size]
-	if ! ok {
+	if !ok {
 		return nil, pp.Errorf("Image size %v is not available", size)
 	}
 	client, err := px.PlainClient()
@@ -199,8 +201,7 @@ type WorkDetail struct {
 }
 
 func (self *WorkDetail) Fetch(client *http.Client, origin *Item) (*Item, error) {
-	params := map[string]string{
-	}
+	params := map[string]string{}
 	setCommonApiParams(&params)
 	var resp []Item
 	err := self.call(client, fmt.Sprintf("v1/works/%d.json", origin.ID), params, &resp)

@@ -1,16 +1,17 @@
-package main
+package pixiv
 
 import (
-	"net/http"
-	"net/url"
-	"encoding/json"
-	"io"
 	"compress/gzip"
+	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/k0kubun/pp"
-	"os"
 	"github.com/Sirupsen/logrus"
+	"github.com/k0kubun/pp"
+	"io"
+	"io/ioutil"
+	"net/http"
+	"net/url"
+	"os"
 	"path"
 	"time"
 )
@@ -21,10 +22,10 @@ const (
 
 var DefaultRequestHeaders = map[string]string{
 	"Content-Type": "application/x-www-form-urlencoded",
-	"User-Agent": USER_AGENT,
+	"User-Agent":   USER_AGENT,
 	//"Accept": "*/*",
 	"Accept-Encoding": "gzip, deflate",
-	"Referer": DEFAULT_REFERRER, // non-auth (image servers...)
+	"Referer":         DEFAULT_REFERRER, // non-auth (image servers...)
 	// "Referer": "http://www.pixiv.net", // auth (api server ...)
 	//"Accept-Language": "ja-jp",
 }
@@ -38,10 +39,9 @@ type APIEndpoint struct {
 }
 
 type APIResponse struct {
-	Status   string `json:"status"`
+	Status   string          `json:"status"`
 	Response json.RawMessage `json:"response"`
 }
-
 
 func (ep *APIEndpoint) Url(path string, params map[string]string) (string, error) {
 	u, err := url.Parse(ep.BaseUrl)
@@ -183,7 +183,11 @@ func (ep *APIEndpoint) call(client *http.Client, path string, params map[string]
 	if res.StatusCode != 200 {
 		return pp.Errorf("%v - \n %v", res.Status, res.Request)
 	}
-	defer res.Body.Close()
+	defer func() {
+		// Drain and close the body to let the Transport reuse the connection
+		io.Copy(ioutil.Discard, res.Body)
+		res.Body.Close()
+	}()
 	body, err := ep.openResponse(res)
 	if err != nil {
 		return err
